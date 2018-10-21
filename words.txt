@@ -1,0 +1,6 @@
+car
+blue
+red
+notebook
+sofa
+door
