@@ -7,7 +7,7 @@ import time
 import optparse
 
 def parseArgs(args):
-    usage = "usage: %texttosound [options]"
+    usage = "usage: ./soundoftext [options]"
     parser = optparse.OptionParser(usage=usage)
 
     parser.add_option('-l', action="store", type="string", dest="language",
@@ -21,26 +21,27 @@ def parseArgs(args):
 
     return opt
 
-def main(args):
-    
-    opt = parseArgs(args)
-
+def textToSpeech(word, language):
     API = "https://api.soundoftext.com/sounds"
+    print("Downloading "+word)
+    filename='{0}.mp3'.format(word.rstrip())
+    data = {"engine":"Google","data":{"text":word,"voice":language}}
+    headers = {'Content-type': 'application/json', 'Accept': '*/*'}
+    r = requests.post(API, data=json.dumps(data), headers=headers, verify=False)
+    id=json.loads(r.text)['id']
+    url = "{0}/{1}".format(API, id)
+    r = requests.get(url, headers=headers, verify=False)
+    url_mp3=json.loads(r.text)['location']
+    r=requests.get(url_mp3)
+    open(filename, 'wb').write(r.content)
+
+def main(args):
+    opt = parseArgs(args)
     input_file = open(opt.words,'r')
-    language = opt.language
     for word in input_file.readlines():
-        print("Downloading "+word)
-        filename='{0}.mp3'.format(word.rstrip())
-        data = {"engine":"Google","data":{"text":word,"voice":language}}
-        headers = {'Content-type': 'application/json', 'Accept': '*/*'}
-        r = requests.post(API, data=json.dumps(data), headers=headers, verify=False)
-        id=json.loads(r.text)['id']
-        url = "{0}/{1}".format(API, id)
-        r = requests.get(url, headers=headers, verify=False)
-        url_mp3=json.loads(r.text)['location']
-        r=requests.get(url_mp3)
-        open(filename, 'wb').write(r.content)
+        textToSpeech(word, opt.language)
         time.sleep(opt.sleep)
+    input_file.close()
 
 if __name__ == '__main__':
     main(sys.argv[1:])
