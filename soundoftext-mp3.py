@@ -1,6 +1,7 @@
 import requests
 import json
 import sys
+import time
 
 API = "https://api.soundoftext.com/sounds"
 input_file = open(sys.argv[1],'r')
@@ -12,6 +13,7 @@ elif language == "jp":
 else:
     language="en-US"
 for word in input_file.readlines():
+    print("Downloading "+word)
     filename='{0}.mp3'.format(word.rstrip())
     data = {"engine":"Google","data":{"text":word,"voice":language}}
     headers = {'Content-type': 'application/json', 'Accept': '*/*'}
@@ -22,4 +24,4 @@ for word in input_file.readlines():
     url_mp3=json.loads(r.text)['location']
     r=requests.get(url_mp3)
     open(filename, 'wb').write(r.content)
-
+    time.sleep(10)
