@@ -7,7 +7,7 @@ import time
 import optparse
 
 def parseArgs(args):
-    usage = "usage: ./soundoftext [options]"
+    usage = "usage: %texttosound [options]"
     parser = optparse.OptionParser(usage=usage)
 
     parser.add_option('-l', action="store", type="string", dest="language",

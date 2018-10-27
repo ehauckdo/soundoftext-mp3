@@ -1,6 +1,4 @@
-car
-blue
-red
-notebook
-sofa
-door
+はじめまして
+田中です
+よろしく
+お願いします
